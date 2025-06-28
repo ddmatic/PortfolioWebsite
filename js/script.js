@@ -1,3 +1,8 @@
+// ====================================================================
+// GLOBAL FUNCTIONS (can run outside DOMContentLoaded if they don't
+// directly interact with specific DOM elements on load, or are called later)
+// ====================================================================
+
 // Smooth scrolling for any navigation links you might add
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -12,7 +17,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
-// Add CSS animation keyframes dynamically (can be outside DOMContentLoaded as it modifies the head)
+// Add CSS animation keyframes dynamically (best placed here, as it modifies the head)
 const style = document.createElement('style');
 style.textContent = `
     @keyframes pulse {
@@ -20,16 +25,41 @@ style.textContent = `
         50% { transform: scale(1.05); }
         100% { transform: scale(1); }
     }
+
+    /* New CSS for the blackout screen */
+    .blackout-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw; /* Viewport width */
+        height: 100vh; /* Viewport height */
+        background-color: rgba(0, 0, 0, 1); /* Solid black */
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Arial', sans-serif; /* You can use your preferred font */
+        font-size: 2.5em; /* Adjust size as needed */
+        font-weight: bold;
+        text-align: center;
+        z-index: 9999; /* Ensure it's on top of everything */
+        opacity: 0; /* Start invisible for a fade-in effect */
+        transition: opacity 0.3s ease-in-out; /* Smooth fade-in/out */
+        pointer-events: none; /* Allows clicks to pass through when not active */
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Subtle shadow for text readability */
+    }
+    .blackout-screen.active {
+        opacity: 1; /* Fade in */
+        pointer-events: auto; /* Re-enable pointer events when active */
+    }
 `;
 document.head.appendChild(style);
 
-// Parallax effect for header background (can be outside DOMContentLoaded if you prefer immediate effect)
+// Parallax effect for header background
 window.addEventListener('scroll', function() {
     const scrolled = window.pageYOffset;
     const header = document.querySelector('header');
     if (header) {
-        // Correct parallax for header. Use transformY for element itself, not its background.
-        // If you want background parallax, the CSS for it would be 'background-position: center ' + (-scrolled * 0.5) + 'px;'
         header.style.transform = `translateY(${scrolled * 0.5}px)`;
     }
 });
@@ -53,7 +83,9 @@ function typeWriter(element, text, speed = 100) {
 // Plane animation function
 function launchPlane() {
     const plane = document.getElementById('plane');
-    if (!plane) return;
+    if (!plane) {
+        return;
+    }
 
     const randomTop = Math.floor(Math.random() * window.innerHeight * 0.7) + 50;
     plane.style.top = `${randomTop}px`;
@@ -67,7 +99,7 @@ function launchPlane() {
     }, 6000);
 }
 
-// Combined window load event (runs after all resources like images are loaded)
+// Combined window load event
 window.addEventListener('load', function() {
     const subtitle = document.querySelector('.subtitle');
     if (subtitle) {
@@ -79,8 +111,17 @@ window.addEventListener('load', function() {
     setInterval(launchPlane, 6000);
 });
 
-// ** ALL CODE THAT INTERACTS WITH HTML ELEMENTS SHOULD BE INSIDE DOMContentLoaded **
+
+// ====================================================================
+// DOMContentLoaded Event Listener
+// All code that interacts with specific HTML elements that must be
+// present in the DOM should go inside this listener.
+// ====================================================================
 document.addEventListener('DOMContentLoaded', function() {
+
+    // State variable to track aviation mode
+    let isAviationModeActive = false; // Initialize to false
+
     // Skill cards interaction
     const skillCards = document.querySelectorAll('.skill-card');
     skillCards.forEach(card => {
@@ -121,18 +162,64 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // >>> MOVE YOUR AVIATION MODE CODE HERE <<<
+    // Aviation Mode and Blackout Effect
     const aviationButton = document.querySelector('.aviation-enabled');
     const headerImage = document.getElementById('headerImage');
 
-    if (aviationButton && headerImage) { // Always good to check
+    if (aviationButton && headerImage) {
         aviationButton.addEventListener('click', function() {
-            headerImage.src = 'img/headerimgpilot.png';
-            console.log('Image source changed to: img/headerimgpilot.png');
+            let blackoutText = "";
+            let newImageSrc = "";
+            let buttonText = ""; // To change button text as well
+
+            if (!isAviationModeActive) {
+                // First click: Activate Aviation Mode
+                newImageSrc = 'img/headerimgpilot.png';
+                blackoutText = "HOWLING TO THE DANGER ZONE!";
+                buttonText = "Exit Aviation Mode";
+                isAviationModeActive = true;
+            } else {
+                // Second click: Deactivate Aviation Mode
+                newImageSrc = 'img/headerimg.png'; // Original image
+                blackoutText = "no dngr zne :(";
+                buttonText = "Aviation Mode";
+                isAviationModeActive = false;
+            }
+
+            // 1. Change header image source
+            headerImage.src = newImageSrc;
+            console.log('Image source changed to:', newImageSrc);
+
+            // 2. Update button text
+            aviationButton.textContent = buttonText;
+
+            // 3. Create blackout screen element
+            const blackoutScreen = document.createElement('div');
+            blackoutScreen.classList.add('blackout-screen');
+            blackoutScreen.textContent = blackoutText; // Set dynamic text
+
+            // 4. Append to body
+            document.body.appendChild(blackoutScreen);
+
+            // 5. Force reflow to allow opacity transition to work from 0 to 1
+            void blackoutScreen.offsetWidth;
+
+            // 6. Activate the blackout screen (fade in)
+            blackoutScreen.classList.add('active');
+
+            // 7. Set timeout to remove after 2 seconds (2000 milliseconds)
+            setTimeout(() => {
+                blackoutScreen.classList.remove('active'); // Start fade out
+
+                // 8. Remove the element from DOM after fade out transition completes
+                setTimeout(() => {
+                    blackoutScreen.remove();
+                }, 300); // Matches blackout-screen transition duration
+            }, 1000); // Duration the screen stays active (2 seconds)
+
         });
     } else {
-        console.error('Aviation button or header image not found. Check HTML IDs/classes.');
+        console.error('Error: Aviation button or header image element not found. Check HTML IDs/classes.');
     }
-    // >>> END OF AVIATION MODE CODE <<<
 
-}); // End of DOMContentLoaded
+}); // End of DOMContentLoaded event listener
