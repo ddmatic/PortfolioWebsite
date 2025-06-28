@@ -165,24 +165,75 @@ document.addEventListener('DOMContentLoaded', function() {
     // Aviation Mode and Blackout Effect
     const aviationButton = document.querySelector('.aviation-enabled');
     const headerImage = document.getElementById('headerImage');
+    const aboutMeParagraph = document.querySelector('.section p');
+    const hotLuxParagraph = document.getElementById('HotLux');
+    const planeStatsParagraph = document.getElementById('PlaneStats')
+    const aboutMeBullet = document.getElementById('AboutMe')
+    const sAndTBullet = document.getElementById('SandT')
+    const projectsBullet = document.getElementById('Projects')
+    const getInTouchBullet = document.getElementById('GetInTouch')
+
+    const originalAboutMeText = "Data analyst with experience in data as well as business and finance. Likes to measure things or make unmeasurable things measurable. Speaking Serbian, English, and with databases. Loves playing basketball but prefers chess nowadays because he’s out of shape.";
+    const aviationAboutMeText = "Data analyst cleared for operations in business and financial airspace. Specializes in precision targeting of metrics - if it can't be measured, he'll deploy tools to get it on radar. Speaks Serbian, English, and DBMS. Used to fly high on the basketball court, but these days he’s logged more hours at the chessboard - fewer Gs, same tactical edge."
+
+    const originalHotLux = "Automates apartment hunting by tracking new and existing listings to avoid missed opportunities. Built with Python, using BeautifulSoup and Selenium for scraping, Flask for the web app, Pandas for data handling, SQLite3 for storage, and OpenAI API for smarter filtering. Provides on-demand updates, Excel export, and a simple web interface."
+    const aviationHotLux = "Mission: Automated recon for apartment ops - scans the skies for new and existing listings to make sure no opportunity flies under the radar. Airframe built in Python, running BeautifulSoup and Selenium on the front sweep. Flask handles comms via a lightweight web interface. Pandas manages onboard data, SQLite3 stores it in the hangar, and OpenAI API adds smart filtering to keep noise off the scope. Features include rapid situational updates, Excel payload drops, and smooth cockpit controls."
+
+    const originalPlaneStats = "Scraped aviation accident data from https://asn.flightsafety.org/ and analyzed it by year, aircraft make and model, and fatalities (passenger and ground) to extract flight safety insights and trends. Used Python with BeautifulSoup for scraping and Matplotlib/Seaborn for visualization."
+    const aviationPlaneStats = "Pulled flight logs from ASN’s safety tower — scraped aviation accident data direct from the source. Ran analysis by year, aircraft type, and casualty figures (both in-cabin and on the ground) to identify safety trends and highlight turbulence in the skies. Python ran point with BeautifulSoup on the scrape, while Matplotlib and Seaborn handled post-mission visuals for clear situational awareness."
+
+    const originalAboutMe = "About Me"
+    const aviationAboutMe = "Brief"
+    const originalSandT = "Skills & Tools"
+    const aviationSandT = "Onboard Systems"
+    const originalProjects = "Featured Projects"
+    const aviationProjects = "Mission Reports"
+    const originalGiT = "Get In Touch"
+    const aviationGiT = "Open Channel"
+
+
+    if (aboutMeParagraph) {
+      aboutMeParagraph.textContent = originalAboutMeText;
+    }
 
     if (aviationButton && headerImage) {
         aviationButton.addEventListener('click', function() {
             let blackoutText = "";
             let newImageSrc = "";
             let buttonText = ""; // To change button text as well
+            let newAboutMeText = "";
+            let newHotLux = "";
+            let newPlaneStats = "";
+            let newAboutMe = "";
+            let newSandT = "";
+            let newProjects = "";
+            let newGiT = "";
 
             if (!isAviationModeActive) {
                 // First click: Activate Aviation Mode
                 newImageSrc = 'img/headerimgpilot.png';
                 blackoutText = "HOWLING TO THE DANGER ZONE!";
                 buttonText = "Exit Aviation Mode";
+                newAboutMeText = aviationAboutMeText;
+                newHotLux = aviationHotLux;
+                newPlaneStats = aviationPlaneStats;
+                newAboutMe = aviationAboutMe;
+                newSandT = aviationSandT;
+                newProjects = aviationProjects;
+                newGiT = aviationGiT;
                 isAviationModeActive = true;
             } else {
                 // Second click: Deactivate Aviation Mode
                 newImageSrc = 'img/headerimg.png'; // Original image
                 blackoutText = "no dngr zne :(";
                 buttonText = "Aviation Mode";
+                newAboutMeText = originalAboutMeText;
+                newHotLux = originalHotLux;
+                newPlaneStats = originalPlaneStats;
+                newAboutMe = originalAboutMe;
+                newSandT = originalSandT;
+                newProjects = originalProjects;
+                newGiT = originalGiT;
                 isAviationModeActive = false;
             }
 
@@ -192,6 +243,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // 2. Update button text
             aviationButton.textContent = buttonText;
+
+            aboutMeParagraph.textContent = newAboutMeText;
+
+            hotLuxParagraph.textContent = newHotLux;
+
+            aboutMeBullet.textContent = newAboutMe;
+
+            sAndTBullet.textContent = newSandT;
+
+            projectsBullet.textContent = newProjects;
+
+            getInTouchBullet.textContent = newGiT;
+
+            planeStatsParagraph.textContent = newPlaneStats;
+            console.log('About Me text changed to:', newAboutMeText)
 
             // 3. Create blackout screen element
             const blackoutScreen = document.createElement('div');

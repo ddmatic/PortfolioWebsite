@@ -110,6 +110,21 @@ h1 {
   z-index: 1;
 }
 
+.aviation-enabled {
+  position: relative; /* Position it relative to the nearest positioned ancestor (the header) */
+  top: 10px;         /* Distance from the top edge of the header */
+  right: 10px;       /* Distance from the right edge of the header */
+  /* You might want to add some basic button styling here too, e.g., */
+  padding: 8px 15px;
+  background: var(--color-shadow-medium); /* Example blue */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  z-index: 2; /* Ensure it's above other elements if needed, like the profile image */
+}
+
 .subtitle {
   font-size: 1.2rem;
   opacity: 0.9;
@@ -157,17 +172,17 @@ h2 {
   gap: 0.5rem;
 }
 
-.icon {
-  width: 15px;
-  height: 15px;
-  background: var(--gradient-darker-grays);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--color-primary-light);
-  font-size: 1rem;
-}
+/*.icon {*/
+/*  width: 15px;*/
+/*  height: 15px;*/
+/*  background: var(--gradient-darker-grays);*/
+/*  border-radius: 8px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*  color: var(--color-primary-light);*/
+/*  font-size: 1rem;*/
+/*}*/
 
 .skills-grid {
   display: grid;
